@@ -33,4 +33,11 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{"action":"ping","data":{}}' \
             "$IDEALAB_API" --output backend.json
-          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('backend.json','utf8')); if(!data.ok || data.backend!=='supabase') { console.error(data); process.exit(1); } console.log('Gateway OK. Storage mode:', data.storage, 'Google configured:', data.googleConfigured);"
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('backend.json','utf8')); if(!data.ok || data.backend!=='supabase' || data.storage!=='google-drive' || !data.googleConfigured) { console.error(data); process.exit(1); } console.log('Gateway OK. Storage mode:', data.storage);"
+
+      - name: Verify Google Sheet and Drive access
+        env:
+          IDEALAB_HEALTH: https://raspnyrkjhgsydtcdrta.supabase.co/functions/v1/bootstrap-users
+        run: |
+          curl --fail --silent --show-error --location "$IDEALAB_HEALTH" --output google-health.json
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('google-health.json','utf8')); if(!data.ok || !data.googleAuth || !data.sheets || !data.drive) { console.error(data); process.exit(1); } console.log('Google auth, Sheets and Drive access OK');"
