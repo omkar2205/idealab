@@ -1,0 +1,32 @@
+name: Analytics Layout Repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/analytics-layout-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply analytics repair
+        run: python scripts/repair_analytics_layout.py
+      - name: Validate JavaScript
+        run: node --check app.js
+      - name: Verify analytics markers
+        run: |
+          grep -q 'No active ideas yet' app.js
+          grep -q 'Analytics layout repair' styles.css
+          grep -q 'repeat(6,minmax(0,1fr))' styles.css
+      - name: Commit repair
+        run: |
+          git config user.name "P Omkareshwar Reddy"
+          git config user.email "coolomkar11@gmail.com"
+          git add app.js styles.css
+          git commit -m "Repair Analytics layout and empty state"
+          git push
