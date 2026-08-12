@@ -1,0 +1,35 @@
+name: Lifecycle Refresh
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/lifecycle-refresh.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply lifecycle refresh
+        run: python scripts/workflow_lifecycle_refresh.py
+      - name: Validate JavaScript
+        run: node --check app.js
+      - name: Verify workflow markers
+        run: |
+          grep -q 'data-nav="mywork"' index.html
+          ! grep -q 'data-nav="brainstorming"' index.html
+          ! grep -q 'data-nav="validation"' index.html
+          grep -q 'function renderMyWork' app.js
+          grep -q 'Send for review' app.js
+          grep -q 'Cool lifecycle workspace' styles.css
+      - name: Commit lifecycle refresh
+        run: |
+          git config user.name "P Omkareshwar Reddy"
+          git config user.email "coolomkar11@gmail.com"
+          git add index.html app.js styles.css
+          git commit -m "Simplify IdeaLab lifecycle and cool the UI palette"
+          git push
