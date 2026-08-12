@@ -1,0 +1,33 @@
+name: IdeaLab smoke check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check JavaScript syntax
+        run: node --check app.js
+
+      - name: Check required frontend files
+        run: |
+          test -s index.html
+          test -s styles.css
+          test -s config.js
+          test -s app.js
+
+      - name: Ping Apps Script backend
+        env:
+          IDEALAB_API: https://script.google.com/macros/s/AKfycbxzQTl9zjhjWId61wv7zaWutWJMSq2xgRXJXNFpRwD_N9iRj444U4rosXQ_kGXkZQ5r/exec
+        run: |
+          curl --fail --silent --show-error --location "$IDEALAB_API?action=ping" --output backend.json
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('backend.json','utf8')); if(!data.ok) { console.error(data); process.exit(1); } console.log('Backend OK:', data.app, data.version);"
