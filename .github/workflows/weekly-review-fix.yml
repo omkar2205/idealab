@@ -1,0 +1,32 @@
+name: Weekly Review Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/weekly-review-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply weekly review workspace
+        run: python scripts/weekly_review_workspace.py
+      - name: Validate JavaScript
+        run: node --check app.js
+      - name: Verify review markers
+        run: |
+          grep -q 'function renderWeeklyReviewWorkspace' app.js
+          grep -q 'Save & next' app.js
+          grep -q 'Weekly review workspace' styles.css
+      - name: Commit fix
+        run: |
+          git config user.name "P Omkareshwar Reddy"
+          git config user.email "coolomkar11@gmail.com"
+          git add app.js styles.css
+          git commit -m "Build functional weekly review workspace"
+          git push
