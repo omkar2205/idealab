@@ -68,11 +68,8 @@
         <button class="nav-item" data-nav="ideas" title="Ideas">
           <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8.5 14.5C7 13.5 6 11.8 6 9.8A6 6 0 0 1 18 9.8c0 2-1 3.7-2.5 4.7-.7.5-1 1.1-1 1.8h-5c0-.7-.3-1.3-1-1.8Z"/></svg><span>Ideas</span><span id="navIdeaCount" class="nav-count">0</span>
         </button>
-        <button class="nav-item" data-nav="brainstorming" title="Brainstorm">
-          <svg viewBox="0 0 24 24"><path d="M4 5h16v11H7l-3 3V5Z"/><path d="M8 9h8M8 12h5"/></svg><span>Brainstorm</span>
-        </button>
-        <button class="nav-item" data-nav="validation" title="Validate">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4M8.5 11l1.7 1.7 3.5-3.5"/></svg><span>Validate</span>
+        <button class="nav-item" data-nav="mywork" title="My Work">
+          <svg viewBox="0 0 24 24"><path d="M9 5h10v16H5V5h4"/><path d="M9 3h6v4H9zM8 12l2 2 4-4M8 18h7"/></svg><span>My Work</span>
         </button>
         <button class="nav-item" data-nav="planning" title="Planning">
           <svg viewBox="0 0 24 24"><path d="M7 3h10v4H7zM5 5h2M17 5h2v16H5V5"/><path d="M8 11h8M8 15h8M8 19h5"/></svg><span>Planning</span>
@@ -146,7 +143,7 @@
         <div class="form-grid form-grid-2">
           <label class="field field-span-2"><span>Idea name</span><input id="ideaTitle" maxlength="180" required></label>
           <label class="field field-span-2"><span>One-line concept</span><input id="ideaSummary" maxlength="500"></label>
-          <label class="field"><span>Stage</span><select id="ideaStage"><option>Idea</option><option>Brainstorming</option><option>Validation</option><option>Planning</option><option>Execution</option></select></label>
+          <input id="ideaStage" type="hidden" value="Idea">
           <label class="field"><span>Priority</span><select id="ideaPriority"><option>Low</option><option selected>Medium</option><option>High</option><option>Critical</option></select></label>
           <label class="field"><span>Owner</span><select id="ideaOwner"></select></label>
           <label class="field"><span>Category</span><input id="ideaCategory" maxlength="120"></label>
