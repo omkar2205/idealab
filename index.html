@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="IdeaLab private idea workspace">
+  <title>IdeaLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+  <section id="loginView" class="login-view">
+    <div class="login-art" aria-hidden="true">
+      <div class="login-orb login-orb-a"></div>
+      <div class="login-orb login-orb-b"></div>
+      <div class="login-grid"></div>
+      <div class="login-story">
+        <a class="brand brand-light" href="#" tabindex="-1">
+          <span class="brand-mark"><span></span><span></span><span></span></span>
+          <span>IdeaLab</span>
+        </a>
+        <div class="login-copy">
+          <p class="eyebrow light">A space for ideas worth exploring</p>
+          <h1>Think freely.<br>Build deliberately.</h1>
+          <p>Capture rough thoughts, challenge assumptions, and move the promising ones forward together.</p>
+        </div>
+        <div class="login-mini-board">
+          <article class="mini-note mini-note-blue">
+            <span class="mini-tag">IDEA</span>
+            <strong>What if we...</strong>
+            <small>Omkar</small>
+          </article>
+          <article class="mini-note mini-note-pink">
+            <span class="mini-tag">THOUGHT</span>
+            <strong>Could we test this?</strong>
+            <small>Chetana</small>
+          </article>
+          <article class="mini-note mini-note-neutral">
+            <span class="mini-tag">NEXT</span>
+            <strong>Run a tiny experiment</strong>
+            <small>Together</small>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-panel">
+      <div class="mobile-login-brand">
+        <span class="brand-mark dark"><span></span><span></span><span></span></span>
+        <strong>IdeaLab</strong>
+      </div>
+      <form id="loginForm" class="auth-card" autocomplete="on">
+        <div class="auth-heading">
+          <p class="eyebrow">Private workspace</p>
+          <h2>Welcome back</h2>
+          <p>Sign in to continue to IdeaLab.</p>
+        </div>
+        <label class="field">
+          <span>Email</span>
+          <input id="loginEmail" name="email" type="email" autocomplete="username" placeholder="you@gmail.com" required>
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <span class="password-wrap">
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+            <button class="icon-button password-toggle" type="button" data-password-toggle="loginPassword" aria-label="Show password">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            </button>
+          </span>
+        </label>
+        <p id="loginError" class="form-error" hidden></p>
+        <button id="loginButton" class="button button-primary button-full" type="submit">
+          <span>Sign in</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <p class="auth-footnote">Access is limited to the two IdeaLab accounts.</p>
+      </form>
+    </div>
+  </section>
+
+  <div id="appView" class="app-shell" hidden>
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-head">
+        <a class="brand" href="#" data-nav="home">
+          <span class="brand-mark dark"><span></span><span></span><span></span></span>
+          <span>IdeaLab</span>
+        </a>
+        <button id="sidebarClose" class="icon-button sidebar-close" aria-label="Close navigation">
+          <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+
+      <button id="quickAddIdea" class="button button-primary sidebar-create">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <span>New idea</span>
+      </button>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <p class="nav-label">Workspace</p>
+        <button class="nav-item active" data-nav="home">
+          <svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20H4v-9.5Z"/><path d="M9 20v-6h6v6"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item" data-nav="ideas">
+          <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8.5 14.5C7 13.5 6 11.8 6 9.8A6 6 0 0 1 18 9.8c0 2-1 3.7-2.5 4.7-.7.5-1 1.1-1 1.8h-5c0-.7-.3-1.3-1-1.8Z"/></svg>
+          <span>Ideas</span><span id="navIdeaCount" class="nav-count">0</span>
+        </button>
+        <button class="nav-item" data-nav="brainstorming">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v11H7l-3 3V5Z"/><path d="M8 9h8M8 12h5"/></svg>
+          <span>Brainstorm</span>
+        </button>
+        <button class="nav-item" data-nav="validation">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4M8.5 11l1.7 1.7 3.5-3.5"/></svg>
+          <span>Validate</span>
+        </button>
+        <button class="nav-item" data-nav="planning">
+          <svg viewBox="0 0 24 24"><path d="M7 3h10v4H7zM5 5h2M17 5h2v16H5V5"/><path d="M8 11h8M8 15h8M8 19h5"/></svg>
+          <span>Planning</span>
+        </button>
+        <button class="nav-item" data-nav="execution">
+          <svg viewBox="0 0 24 24"><path d="M14 5 19 10M13 6l5 5-8.5 8.5L4 20l.5-5.5L13 6Z"/><path d="m15 4 2-2 5 5-2 2"/></svg>
+          <span>Execution</span>
+        </button>
+
+        <p class="nav-label nav-label-spaced">Rhythm</p>
+        <button class="nav-item" data-nav="reviews">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg>
+          <span>Weekly review</span>
+        </button>
+        <button class="nav-item" data-nav="archive">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16v14H4zM3 3h18v4H3zM9 11h6"/></svg>
+          <span>Archive</span>
+        </button>
+        <button class="nav-item" data-nav="profiles">
+          <svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M3 20c0-4 2-6 5-6s5 2 5 6M13 15c.7-.7 1.7-1 3-1 3 0 5 2 5 6"/></svg>
+          <span>Profiles</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-profile">
+        <button id="profileMenuButton" class="profile-chip" aria-expanded="false">
+          <span id="sidebarAvatar" class="avatar">O</span>
+          <span class="profile-chip-copy"><strong id="sidebarName">Omkar</strong><small>My profile</small></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"/></svg>
+        </button>
+        <div id="profileMenu" class="profile-menu" hidden>
+          <button data-nav="profiles"><span>View profiles</span></button>
+          <button id="logoutButton"><span>Sign out</span></button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button id="sidebarOpen" class="icon-button mobile-menu" aria-label="Open navigation">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div class="topbar-title">
+          <p id="pageKicker">Workspace</p>
+          <h1 id="pageTitle">Home</h1>
+        </div>
+        <div class="topbar-actions">
+          <button id="searchButton" class="icon-button" aria-label="Search ideas">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+          </button>
+          <button id="topAddIdea" class="button button-primary button-compact">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            <span>Add idea</span>
+          </button>
+        </div>
+      </header>
+
+      <div id="pageRoot" class="page-root">
+        <section id="homePage" class="page-section"></section>
+        <section id="boardPage" class="page-section" hidden></section>
+        <section id="reviewsPage" class="page-section" hidden></section>
+        <section id="profilesPage" class="page-section" hidden></section>
+      </div>
+    </main>
+  </div>
+
+  <div id="sidebarScrim" class="sidebar-scrim" hidden></div>
+
+  <dialog id="ideaDialog" class="modal modal-wide">
+    <form id="ideaForm" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Capture it before it disappears</p>
+          <h2 id="ideaDialogTitle">New idea</h2>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog="ideaDialog" aria-label="Close">
+          <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input id="ideaId" type="hidden">
+        <div class="form-grid form-grid-2">
+          <label class="field field-span-2">
+            <span>Idea name</span>
+            <input id="ideaTitle" maxlength="180" placeholder="Give the idea a clear working name" required>
+          </label>
+          <label class="field field-span-2">
+            <span>One-line concept</span>
+            <input id="ideaSummary" maxlength="500" placeholder="What is the idea, in one sentence?">
+          </label>
+          <label class="field">
+            <span>Stage</span>
+            <select id="ideaStage">
+              <option>Idea</option><option>Brainstorming</option><option>Validation</option><option>Planning</option><option>Execution</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Priority</span>
+            <select id="ideaPriority">
+              <option>Low</option><option selected>Medium</option><option>High</option><option>Critical</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Owner</span>
+            <select id="ideaOwner"></select>
+          </label>
+          <label class="field">
+            <span>Category</span>
+            <input id="ideaCategory" maxlength="120" placeholder="e.g. SaaS, Food, Community">
+          </label>
+          <label class="field field-span-2">
+            <span>Tags</span>
+            <input id="ideaTags" maxlength="1000" placeholder="consumer, subscription, low-cost">
+          </label>
+          <label class="field field-span-2">
+            <span>Notes</span>
+            <textarea id="ideaDescription" rows="4" maxlength="6000" placeholder="Dump the raw thought here. It does not need to be polished."></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="button button-secondary" type="button" data-close-dialog="ideaDialog">Cancel</button>
+        <button id="saveIdeaButton" class="button button-primary" type="submit">Save idea</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="detailDialog" class="modal modal-detail">
+    <div id="ideaDetailRoot"></div>
+  </dialog>
+
+  <dialog id="passwordDialog" class="modal modal-small" data-static="true">
+    <form id="passwordForm" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">First login</p>
+          <h2>Create your password</h2>
+          <p class="modal-subtitle">Replace the temporary password before entering IdeaLab.</p>
+        </div>
+      </div>
+      <div class="modal-body">
+        <label class="field">
+          <span>New password</span>
+          <span class="password-wrap">
+            <input id="newPassword" type="password" autocomplete="new-password" required minlength="10">
+            <button class="icon-button password-toggle" type="button" data-password-toggle="newPassword" aria-label="Show password">
+              <svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            </button>
+          </span>
+        </label>
+        <label class="field">
+          <span>Confirm password</span>
+          <input id="confirmPassword" type="password" autocomplete="new-password" required minlength="10">
+        </label>
+        <div class="password-rules">
+          <span>10+ characters</span><span>Upper + lowercase</span><span>Number</span><span>Special character</span>
+        </div>
+        <p id="passwordError" class="form-error" hidden></p>
+      </div>
+      <div class="modal-actions">
+        <button id="changePasswordButton" class="button button-primary button-full" type="submit">Set password & continue</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="searchDialog" class="modal modal-search">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+      <input id="globalSearch" type="search" placeholder="Search ideas, categories or tags..." autocomplete="off">
+      <button class="kbd-button" type="button" data-close-dialog="searchDialog">Esc</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
