@@ -3,6 +3,7 @@
 
   const CONFIG = window.IDEALAB_CONFIG || {};
   const TOKEN_KEY = 'idealab_session_token';
+  const SIDEBAR_KEY = 'idealab_sidebar_collapsed';
   const state = { token: sessionStorage.getItem(TOKEN_KEY) || '', user: null, dashboard: {}, profiles: [], ideas: [], archive: [], activity: [], currentPage: 'home', currentIdea: null };
   const $ = id => document.getElementById(id);
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -11,8 +12,8 @@
   const els = {
     loginView:$('loginView'),appView:$('appView'),loginForm:$('loginForm'),loginEmail:$('loginEmail'),loginPassword:$('loginPassword'),loginError:$('loginError'),loginButton:$('loginButton'),
     passwordDialog:$('passwordDialog'),passwordForm:$('passwordForm'),newPassword:$('newPassword'),confirmPassword:$('confirmPassword'),passwordError:$('passwordError'),changePasswordButton:$('changePasswordButton'),
-    sidebar:$('sidebar'),sidebarOpen:$('sidebarOpen'),sidebarClose:$('sidebarClose'),sidebarScrim:$('sidebarScrim'),sidebarName:$('sidebarName'),sidebarAvatar:$('sidebarAvatar'),profileMenuButton:$('profileMenuButton'),profileMenu:$('profileMenu'),logoutButton:$('logoutButton'),
-    pageTitle:$('pageTitle'),pageKicker:$('pageKicker'),homePage:$('homePage'),boardPage:$('boardPage'),reviewsPage:$('reviewsPage'),profilesPage:$('profilesPage'),quickAddIdea:$('quickAddIdea'),topAddIdea:$('topAddIdea'),
+    sidebar:$('sidebar'),sidebarOpen:$('sidebarOpen'),sidebarCollapse:$('sidebarCollapse'),sidebarClose:$('sidebarClose'),sidebarScrim:$('sidebarScrim'),sidebarName:$('sidebarName'),sidebarAvatar:$('sidebarAvatar'),profileMenuButton:$('profileMenuButton'),profileMenu:$('profileMenu'),logoutButton:$('logoutButton'),
+    homePage:$('homePage'),boardPage:$('boardPage'),reviewsPage:$('reviewsPage'),profilesPage:$('profilesPage'),topAddIdea:$('topAddIdea'),
     ideaDialog:$('ideaDialog'),ideaForm:$('ideaForm'),ideaDialogTitle:$('ideaDialogTitle'),ideaId:$('ideaId'),ideaTitle:$('ideaTitle'),ideaSummary:$('ideaSummary'),ideaStage:$('ideaStage'),ideaPriority:$('ideaPriority'),ideaOwner:$('ideaOwner'),ideaCategory:$('ideaCategory'),ideaTags:$('ideaTags'),ideaDescription:$('ideaDescription'),saveIdeaButton:$('saveIdeaButton'),
     detailDialog:$('detailDialog'),ideaDetailRoot:$('ideaDetailRoot'),searchButton:$('searchButton'),searchDialog:$('searchDialog'),globalSearch:$('globalSearch'),searchResults:$('searchResults'),navIdeaCount:$('navIdeaCount'),toastRegion:$('toastRegion')
   };
@@ -83,7 +84,7 @@
   function passwordError(msg){els.passwordError.textContent=msg;els.passwordError.hidden=false;}
   async function logout(){try{if(state.token)await api('logout');}catch{}clearSession(true);}
 
-  function navigate(page){state.currentPage=page;const [k,t]=pageInfo[page]||pageInfo.home;els.pageKicker.textContent=k;els.pageKicker.hidden=!k;els.pageTitle.textContent=t;qsa('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.nav===page));els.homePage.hidden=page!=='home';els.boardPage.hidden=!['ideas','brainstorming','validation','planning','execution','archive'].includes(page);els.reviewsPage.hidden=page!=='reviews';els.profilesPage.hidden=page!=='profiles';renderCurrent();closeSidebar();}
+  function navigate(page){state.currentPage=page;qsa('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.nav===page));els.homePage.hidden=page!=='home';els.boardPage.hidden=!['ideas','brainstorming','validation','planning','execution','archive'].includes(page);els.reviewsPage.hidden=page!=='reviews';els.profilesPage.hidden=page!=='profiles';renderCurrent();closeSidebar();}
   function renderCurrent(){if(!state.user)return;if(state.currentPage==='home')renderHome();else if(state.currentPage==='reviews')renderReviews();else if(state.currentPage==='profiles')renderProfiles();else if(state.currentPage==='archive')renderArchive();else renderBoardPage(state.currentPage);}
 
   function metric(cls,icon,val,label){return`<article class="metric-card ${cls}"><div class="metric-icon">${icon}</div><strong>${esc(val??0)}</strong><p>${esc(label)}</p></article>`;}
@@ -142,15 +143,26 @@
   function renderSearch(q){q=String(q||'').trim().toLowerCase();const rows=state.ideas.filter(i=>!q||[i.Title,i.OneLineSummary,i.Description,i.Category,i.Tags].join(' ').toLowerCase().includes(q)).slice(0,12);els.searchResults.innerHTML=rows.length?rows.map(ideaRow).join(''):'<div style="padding:25px;text-align:center;color:var(--faint)">No matching ideas.</div>';bindRendered(els.searchResults);}
   function bindRendered(root){qsa('[data-open-idea]',root).forEach(x=>x.addEventListener('click',()=>openIdea(x.dataset.openIdea)));qsa('[data-nav-inline]',root).forEach(x=>x.addEventListener('click',()=>navigate(x.dataset.navInline)));qsa('[data-new-idea]',root).forEach(x=>x.addEventListener('click',()=>openIdeaForm()));}
 
+  function setSidebarCollapsed(collapsed, persist=false){
+    document.body.classList.toggle('sidebar-collapsed',Boolean(collapsed));
+    if(els.sidebarCollapse){
+      els.sidebarCollapse.setAttribute('aria-expanded',String(!collapsed));
+      els.sidebarCollapse.setAttribute('aria-label',collapsed?'Expand navigation':'Collapse navigation');
+      const path=els.sidebarCollapse.querySelector('path');
+      if(path)path.setAttribute('d',collapsed?'m10 7 5 5-5 5':'m14 7-5 5 5 5');
+    }
+    if(persist)localStorage.setItem(SIDEBAR_KEY,collapsed?'1':'0');
+  }
+  function toggleSidebarCollapsed(){setSidebarCollapsed(!document.body.classList.contains('sidebar-collapsed'),true);}
   function openSidebar(){els.sidebar.classList.add('mobile-open');els.sidebarScrim.hidden=false;}
   function closeSidebar(){els.sidebar.classList.remove('mobile-open');els.sidebarScrim.hidden=true;}
   function bindStatic(){
-    els.loginForm.addEventListener('submit',login);els.passwordForm.addEventListener('submit',changePassword);els.ideaForm.addEventListener('submit',saveIdea);els.logoutButton.addEventListener('click',logout);els.quickAddIdea.addEventListener('click',()=>openIdeaForm());els.topAddIdea.addEventListener('click',()=>openIdeaForm());els.searchButton.addEventListener('click',openSearch);els.globalSearch.addEventListener('input',e=>renderSearch(e.target.value));
+    els.loginForm.addEventListener('submit',login);els.passwordForm.addEventListener('submit',changePassword);els.ideaForm.addEventListener('submit',saveIdea);els.logoutButton.addEventListener('click',logout);els.topAddIdea.addEventListener('click',()=>openIdeaForm());els.searchButton.addEventListener('click',openSearch);els.sidebarCollapse?.addEventListener('click',toggleSidebarCollapsed);els.globalSearch.addEventListener('input',e=>renderSearch(e.target.value));
     els.profileMenuButton.addEventListener('click',()=>{els.profileMenu.hidden=!els.profileMenu.hidden;els.profileMenuButton.setAttribute('aria-expanded',String(!els.profileMenu.hidden));});els.sidebarOpen.addEventListener('click',openSidebar);els.sidebarClose.addEventListener('click',closeSidebar);els.sidebarScrim.addEventListener('click',closeSidebar);
     qsa('[data-nav]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();navigate(b.dataset.nav);els.profileMenu.hidden=true;}));qsa('[data-close-dialog]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.closeDialog)?.close()));qsa('[data-password-toggle]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.passwordToggle);if(!i)return;i.type=i.type==='password'?'text':'password';b.setAttribute('aria-label',i.type==='password'?'Show password':'Hide password');}));
     document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();if(!els.appView.hidden)openSearch();}if(e.key==='Escape')closeSidebar();});[els.ideaDialog,els.detailDialog,els.searchDialog].forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));
   }
 
-  async function boot(){bindStatic();if(!state.token)return showLogin();try{await loadState();showApp();navigate('home');}catch{clearSession(true);}}
+  async function boot(){setSidebarCollapsed(localStorage.getItem(SIDEBAR_KEY)==='1');bindStatic();if(!state.token)return showLogin();try{await loadState();showApp();navigate('home');}catch{clearSession(true);}}
   boot();
 })();

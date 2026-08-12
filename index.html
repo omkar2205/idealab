@@ -72,15 +72,13 @@
           <span class="brand-mark dark"><span></span><span></span><span></span></span>
           <span>IdeaLab</span>
         </a>
+        <button id="sidebarCollapse" class="icon-button sidebar-collapse" aria-label="Collapse navigation" aria-expanded="true">
+          <svg viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg>
+        </button>
         <button id="sidebarClose" class="icon-button sidebar-close" aria-label="Close navigation">
           <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
         </button>
       </div>
-
-      <button id="quickAddIdea" class="button button-primary sidebar-create">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-        <span>New idea</span>
-      </button>
 
       <nav class="main-nav" aria-label="Main navigation">
         <p class="nav-label">Workspace</p>
@@ -136,26 +134,19 @@
         </div>
       </div>
     </aside>
-
     <main class="main-content">
-      <header class="topbar">
-        <button id="sidebarOpen" class="icon-button mobile-menu" aria-label="Open navigation">
-          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <button id="sidebarOpen" class="icon-button mobile-menu floating-menu" aria-label="Open navigation">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+
+      <div class="floating-actions" aria-label="Quick actions">
+        <button id="searchButton" class="floating-action floating-action-secondary" aria-label="Search ideas" title="Search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
         </button>
-        <div class="topbar-title">
-          <p id="pageKicker">Workspace</p>
-          <h1 id="pageTitle">Home</h1>
-        </div>
-        <div class="topbar-actions">
-          <button id="searchButton" class="icon-button" aria-label="Search ideas">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
-          </button>
-          <button id="topAddIdea" class="button button-primary button-compact">
-            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-            <span>Add idea</span>
-          </button>
-        </div>
-      </header>
+        <button id="topAddIdea" class="floating-action floating-action-primary" aria-label="Add idea" title="Add idea">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
 
       <div id="pageRoot" class="page-root">
         <section id="homePage" class="page-section"></section>
