@@ -1,0 +1,27 @@
+name: Refine IdeaLab navigation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refine-navigation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply navigation refinement
+        run: python scripts/refine_navigation.py
+      - name: Validate JavaScript
+        run: node --check app.js
+      - name: Commit navigation refinement
+        run: |
+          git config user.name "P Omkareshwar Reddy"
+          git config user.email "coolomkar11@gmail.com"
+          git add index.html app.js styles.css
+          git commit -m "Refine navigation and floating actions"
+          git push
