@@ -25,9 +25,12 @@ jobs:
           test -s config.js
           test -s app.js
 
-      - name: Ping Apps Script backend
+      - name: Ping Supabase backend
         env:
-          IDEALAB_API: https://script.google.com/macros/s/AKfycbxzQTl9zjhjWId61wv7zaWutWJMSq2xgRXJXNFpRwD_N9iRj444U4rosXQ_kGXkZQ5r/exec
+          IDEALAB_API: https://raspnyrkjhgsydtcdrta.supabase.co/functions/v1/idealab-gateway
         run: |
-          curl --fail --silent --show-error --location "$IDEALAB_API?action=ping" --output backend.json
-          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('backend.json','utf8')); if(!data.ok) { console.error(data); process.exit(1); } console.log('Backend OK:', data.app, data.version);"
+          curl --fail --silent --show-error --location \
+            -H "Content-Type: application/json" \
+            -d '{"action":"ping","data":{}}' \
+            "$IDEALAB_API" --output backend.json
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('backend.json','utf8')); if(!data.ok) { console.error(data); process.exit(1); } console.log('Supabase backend OK');"
