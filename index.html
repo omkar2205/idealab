@@ -115,10 +115,10 @@
       </button>
       <div id="pageRoot" class="page-root"></div>
       <div class="floating-actions" aria-label="Quick actions">
-        <button id="searchButton" class="floating-action floating-action-secondary" aria-label="Search ideas" title="Search (Ctrl+K)">
+        <button id="searchButton" class="floating-action floating-action-secondary" data-label="Search" aria-label="Search ideas" title="Search (Ctrl+K)">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
         </button>
-        <button id="topAddIdea" class="floating-action floating-action-primary" aria-label="Add idea" title="New idea (N)">
+        <button id="topAddIdea" class="floating-action floating-action-primary" data-label="Add idea" aria-label="Add idea" title="New idea (N)">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         </button>
       </div>
@@ -175,6 +175,16 @@
   <dialog id="searchDialog" class="modal modal-search">
     <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><input id="globalSearch" autocomplete="off" placeholder="Search ideas"><button class="kbd-button" type="button" data-close-dialog="searchDialog">Esc</button></div>
     <div id="searchResults" class="search-results"></div>
+  </dialog>
+
+
+  <dialog id="avatarDialog" class="modal modal-small avatar-dialog">
+    <div class="modal-head compact"><h2>Choose avatar</h2><button class="icon-button" type="button" data-close-dialog="avatarDialog" aria-label="Close"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <div class="modal-body">
+      <div id="avatarOptions" class="avatar-options"></div>
+      <label class="field avatar-custom-field"><span>Custom emoji</span><input id="customAvatarInput" maxlength="12" placeholder="Paste an emoji"></label>
+    </div>
+    <div class="modal-actions"><button id="saveCustomAvatar" class="button button-primary" type="button">Save avatar</button></div>
   </dialog>
 
   <dialog id="passwordDialog" class="modal modal-small">
