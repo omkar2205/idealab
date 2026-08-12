@@ -24,6 +24,7 @@ jobs:
           test -s styles.css
           test -s config.js
           test -s app.js
+          test -s assets/logo.svg
 
       - name: Ping production gateway
         env:
@@ -34,3 +35,13 @@ jobs:
             -d '{"action":"ping","data":{}}' \
             "$IDEALAB_API" --output backend.json
           node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('backend.json','utf8')); if(!data.ok || data.backend!=='supabase' || data.storage!=='google-drive' || !data.googleConfigured) { console.error(data); process.exit(1); } console.log('IdeaLab gateway OK. Storage:', data.storage);"
+
+      - name: Ping ratings and analytics service
+        env:
+          IDEALAB_INSIGHTS_API: https://raspnyrkjhgsydtcdrta.supabase.co/functions/v1/idealab-insights
+        run: |
+          curl --fail --silent --show-error --location \
+            -H "Content-Type: application/json" \
+            -d '{"action":"ping","data":{}}' \
+            "$IDEALAB_INSIGHTS_API" --output insights.json
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('insights.json','utf8')); if(!data.ok || data.backend!=='supabase' || data.storage!=='google-drive' || data.service!=='idealab-insights') { console.error(data); process.exit(1); } console.log('IdeaLab insights OK. Storage:', data.storage);"
