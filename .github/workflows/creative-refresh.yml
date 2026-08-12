@@ -1,0 +1,32 @@
+name: Creative Studio Refresh
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/creative-refresh.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply UI refresh
+        run: python scripts/creative_studio_refresh.py
+      - name: Validate JavaScript
+        run: node --check app.js
+      - name: Verify key UI markers
+        run: |
+          grep -q 'analytics-hero' app.js
+          grep -q 'avatarDialog' index.html
+          grep -q 'creative studio refresh' styles.css
+      - name: Commit refresh
+        run: |
+          git config user.name "P Omkareshwar Reddy"
+          git config user.email "coolomkar11@gmail.com"
+          git add index.html app.js styles.css
+          git commit -m "Refresh IdeaLab creative studio UI and avatars"
+          git push
